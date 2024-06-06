@@ -70,6 +70,9 @@ class Player(pygame.sprite.Sprite):
         self.sleep = False
         self.soil_layer = soil_layer
         self.toggle_shop = toggle_shop
+        self.wattering = pygame.mixer.Sound('../audio/water.mp3')
+
+        self.seed_timer = Timer(400)
 
     def use_tool(self):
         if self.selected_tool == 'axe':
@@ -80,6 +83,7 @@ class Player(pygame.sprite.Sprite):
             self.soil_layer.get_hit(self.target_pos)
         if self.selected_tool == 'water':
             self.soil_layer.water(self.target_pos)
+            self.wattering.play()
 
     def get_target_position(self):
         self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
@@ -137,6 +141,7 @@ class Player(pygame.sprite.Sprite):
             self.actions['tool_use'] = True
             self.direction = pygame.math.Vector2()
             self.use_tool()
+            self.seed_timer.activate()
         else:
             self.actions['tool_use'] = False
 
@@ -151,10 +156,11 @@ class Player(pygame.sprite.Sprite):
             self.selected_tool = self.tools[self.tool_index]
 
         # seed use
-        if keys[pygame.K_LCTRL]:
+        if keys[pygame.K_LCTRL] and not self.seed_timer.active:
             self.actions['seed_use'] = True
             self.direction = pygame.math.Vector2()
             self.use_seed()
+            self.seed_timer.activate()
         else:
             self.actions['seed_use'] = False
 
@@ -208,6 +214,7 @@ class Player(pygame.sprite.Sprite):
     def update_timers(self):
         for timer in self.timers.values():
             timer.update()
+            self.seed_timer.update()
 
     def move(self, dt):
 

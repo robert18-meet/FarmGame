@@ -56,14 +56,18 @@ class Tree(Generic):
 
         self.player_add = player_add
 
+        self.axe_sound = pygame.mixer.Sound('../audio/axe.mp3')
+
     def damage(self):
         self.health = self.health - 0.01
+        self.axe_sound.play()
         if len(self.apple_sprites.sprites()) <= 0 or randint(0, 1000) > 5:
             return
         random_apple = choice(self.apple_sprites.sprites())
         Particle(random_apple.rect.topleft, random_apple.image, self.groups()[0], LAYERS['fruit'])
         random_apple.kill()
         self.player_add('apple')
+
 
     def check_death(self):
         if self.health >= 0:
