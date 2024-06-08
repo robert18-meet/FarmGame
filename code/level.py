@@ -99,7 +99,7 @@ class Level:
         self.soil_layer.remove_water()
         self.raining = randint(0, 10) > 3
         self.soil_layer.raining = self.raining
-        self.sky.start_color[255,255,255]
+        self.sky.start_color = [255,255,255]
         if self.raining:
             self.soil_layer.water_all()
 
